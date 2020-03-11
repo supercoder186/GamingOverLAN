@@ -1,4 +1,4 @@
-from tanktroublemoment import Server
+from UltraSockets import Server
 import pyautogui
 
 host = '192.168.137.1'
