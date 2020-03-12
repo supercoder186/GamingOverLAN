@@ -24,6 +24,7 @@ if not host:
 print('Using', host, 'as host')
 port = 8080
 server = Server(host,port,1,"server")
+print(chars)
 server.send("client", chars)
 
 while True:
