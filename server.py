@@ -9,9 +9,9 @@ def get_ip_address():
     return s.getsockname()[0]
 
 
-host_ip = get_ip_address()
+host_ip = get_ip_address() + ':8080'
 
-print("Detected hostname is:", host_ip)
+print('Detected hostname is:', host_ip)
 
 print("Enter what keys the client should be able to use eg. wasd")
 chars = "".join(set(input('Characters: ')))
@@ -22,9 +22,7 @@ if not host:
     host = host_ip
 
 print('Using', host, 'as host')
-port = 8080
-server = Server(host,port,1,"server")
-print(chars)
+server = Server(host,1,"server")
 server.send("client", chars)
 
 while True:
@@ -33,6 +31,6 @@ while True:
         for objects in data:
             obj = objects[1]
             if obj[1] == 'n':
-                pyautogui.keyUp(obj[0]);
+                pyautogui.keyUp(obj[0])
             else:
-                pyautogui.keyDown(obj[0]);
+                pyautogui.keyDown(obj[0])

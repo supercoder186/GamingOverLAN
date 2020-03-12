@@ -21,7 +21,7 @@ class ProtoSockets:
 class GenericSockets:
     def __init(self):
         pass
-    
+
     def get(self,number_of_entries):
         if self.recieved.qsize() != 0:
             values = []
@@ -37,8 +37,18 @@ class GenericSockets:
         else:
             return None
 
+    def parse_host(self,hostname):
+        host = hostname.replace('tcp://', '').split(':')
+        try:
+            port = int(host[1])
+        except:
+            raise TypeError("Invalid format! Use format <ip>:<port>")
+        host = host[0]
+        return host,port
+
 class Server(ProtoSockets, GenericSockets):
-    def __init__(self, host, port, connections, name):
+
+    def __init__(self, hostname, connections, name):
 
         self.type = "server"
         self.Socket = socket.socket()
@@ -46,11 +56,13 @@ class Server(ProtoSockets, GenericSockets):
         self.collector_threads = []
         self.recieved = queue.Queue()
         
+        host,port = self.parse_host(hostname)
+        
         self.Socket.bind((host,port))
         self.Socket.listen(connections)
 
         self.handshake_initiate(connections)
-    
+
     def handshake_initiate(self,connections):
         self.users = {}
 
@@ -59,13 +71,13 @@ class Server(ProtoSockets, GenericSockets):
             print("Connection from: " + str(addr))
             name = self.protorecieve(conn)
             self.users[name] = [conn,addr]
-    
+
             t = threading.Thread(target=self.idle_collector,args=(conn,name, ))
             t.start()
             self.collector_threads.append(t)
-        
+
         for key, value in self.users.items():
-            self.protosend(self.name, conn)   
+            self.protosend(self.name, conn)
 
     def idle_collector(self,conn,name):
         while True:
@@ -78,9 +90,9 @@ class Server(ProtoSockets, GenericSockets):
 
                 if not data:
                     break
-                
+
                 recipient = data.partition(',')
-                
+
                 if recipient[0] == self.name:
                     if recipient[2] == "closerequest":
                         self.send(name,"closeaccepted")
@@ -88,27 +100,29 @@ class Server(ProtoSockets, GenericSockets):
                     else:
                         self.recieved.put([name,recipient[2],self.recieved.qsize()])
                 else:
-                    self.send(recipient[0],recipient[2])
-                    
-            restart = self.protorecieve(conn)  
+                    self.send(name,recipient[2])
+
+            restart = self.protorecieve(conn)
 
             if restart == "restart":
                 pass
             elif restart == "terminate":
                 break
-        
+
     def send(self, name, message):
         message = name + ',' + str(message)
         message = struct.pack("i", len(message)) + message.encode()
         self.users[name][0].send(message)
-     
+
 class Client(ProtoSockets, GenericSockets):
-    def __init__(self, host, port, name):
-        
+    def __init__(self, hostname, name):
+
         self.type = "client"
         self.conn = socket.socket()
         self.name = name
         self.recieved = queue.Queue()
+        
+        host,port = self.parse_host(hostname)
         
         self.handshake_accept(host,port)
 
@@ -116,10 +130,10 @@ class Client(ProtoSockets, GenericSockets):
         self.conn.connect((host,port))
         self.protosend(self.name,self.conn)
         self.servername = self.protorecieve(self.conn)
-                
+
         self.collect = threading.Thread(target=self.idle_collector)
         self.collect.start()
-           
+
     def send(self,name,message):
         message = name + ',' + str(message)
         message = struct.pack("i", len(message)) + message.encode()
@@ -127,10 +141,10 @@ class Client(ProtoSockets, GenericSockets):
 
     def idle_collector(self):
         conn = self.conn
-        while True:   
+        while True:
             size = struct.unpack("i", conn.recv(struct.calcsize("i")))[0]
             data = ""
-            
+
             while len(data) < size:
                 msg = conn.recv(size - len(data))
                 data += msg.decode()
@@ -158,7 +172,6 @@ class Client(ProtoSockets, GenericSockets):
         self.send(self.servername, "closerequest")
         self.protosend('terminate',self.conn)
         self.collect.join()
-    
+
 if __name__ == '__main__':
     print("Hello World")
-

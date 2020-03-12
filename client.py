@@ -5,10 +5,9 @@ from UltraSockets import Client
 
 print("The server should have printed the hostname")
 host = input("Enter the hostname: ")
-port = 8080
 name = 'client'
 
-pc = Client(host, port, name)
+pc = Client(host, name)
 time.sleep(1)
 
 c = pc.get('all')[0][1]
@@ -23,7 +22,9 @@ print('For example , if your character string is abcd and you enter wasd, then w
 rebinds = None
 while True:
     r = input('Rebind string: ')
-    if not len(r) == len(c):
+    if not r:
+        break
+    elif not len(r) == len(c):
         print('Invalid rebind string!')
         continue
     
