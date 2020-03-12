@@ -2,23 +2,26 @@ from pynput.keyboard import Key, Listener
 import time
 from UltraSockets import Client
 
-host = '192.168.137.1'
+
+print("The server should have printed the hostname")
+host = input("Enter the hostname: ")
 port = 8080
 name = 'client'
 
 pc = Client(host, port, name)
 time.sleep(1)
 
-print(pc.get('all')[0][1])
-print("Connection established")
+c = pc.get('all')[0][1]
 
-chars = [char for char in 'qesdf']
+print("Connection established")
+print('You can use the following characters:', c)
+
+chars = [char for char in c]
 
 pressedChars = []
 for char in chars:
     pressedChars.append([char, False])
 
-print(pressedChars)
 
 def on_press(k):
     key = str(k).replace("'", "")

@@ -1,10 +1,30 @@
 from UltraSockets import Server
 import pyautogui
+import socket
 
-host = '192.168.137.1'
+
+def get_ip_address():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.connect(("8.8.8.8", 80))
+    return s.getsockname()[0]
+
+
+host_ip = get_ip_address()
+
+print("Detected hostname is:", host_ip)
+
+print("Enter what keys the client should be able to use eg. wasd")
+characters = input('Characters: ')
+
+print('Enter the hostname you want to use\nLeave the field blank to use the provided hostname')
+host = input('Hostname: ')
+if not host:
+    host = host_ip
+
+print('Using', host, 'as host')
 port = 8080
 server = Server(host,port,1,"server")
-server.send("client","hi")
+server.send("client", characters)
 
 while True:
     data = server.get('all')
@@ -15,4 +35,4 @@ while True:
                 pyautogui.keyUp(obj[0]);
             else:
                 pyautogui.keyDown(obj[0]);
-    
+
