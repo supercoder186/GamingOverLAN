@@ -14,7 +14,7 @@ host_ip = get_ip_address()
 print("Detected hostname is:", host_ip)
 
 print("Enter what keys the client should be able to use eg. wasd")
-characters = input('Characters: ')
+chars = "".join(set(input('Characters: ')))
 
 print('Enter the hostname you want to use\nLeave the field blank to use the provided hostname')
 host = input('Hostname: ')
@@ -24,7 +24,7 @@ if not host:
 print('Using', host, 'as host')
 port = 8080
 server = Server(host,port,1,"server")
-server.send("client", characters)
+server.send("client", chars)
 
 while True:
     data = server.get('all')
@@ -35,4 +35,3 @@ while True:
                 pyautogui.keyUp(obj[0]);
             else:
                 pyautogui.keyDown(obj[0]);
-
