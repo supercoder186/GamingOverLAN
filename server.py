@@ -1,6 +1,8 @@
-from UltraSockets import Server
-import pyautogui
 import socket
+
+import pyautogui
+
+from UltraSockets import Server
 
 
 def get_ip_address():
@@ -22,7 +24,7 @@ if not host:
     host = host_ip
 
 print('Using', host, 'as host')
-server = Server(host,1,"server")
+server = Server(host, 1, "server")
 server.send("client", chars)
 
 while True:
