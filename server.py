@@ -1,6 +1,6 @@
+import os
 import socket
 import tkinter as tk
-from queue import Queue
 from threading import Thread
 
 import pyautogui
@@ -18,14 +18,13 @@ running = False
 thread = None
 server = None
 host_ip = get_ip_address()
-q = Queue(maxsize=3)
 
 
 def run_server(host, chars):
-    global server, q
+    global server
     server = Server(host, 1, 'server')
     server.send('client', chars)
-    while not q.qsize():
+    while True:
         data = server.get('all')
         if data:
             for objects in data:
@@ -35,11 +34,9 @@ def run_server(host, chars):
                 else:
                     pyautogui.keyDown(obj[0])
 
-    server = None
-
 
 def toggle_host():
-    global tSelectHost, tSelectChar, running, thread, host_ip, btn_text
+    global tSelectHost, tSelectChar, running, thread, host_ip, btn_text, server
     running = not running
     print('Running:', running)
     if running:
@@ -51,9 +48,8 @@ def toggle_host():
         thread.start()
         btn_text.set('Stop server')
     else:
-        btn_text.set('Start server')
-        q.put('stop')
-        thread.join()
+        # noinspection PyProtectedMember
+        os._exit(0)
 
 
 root = tk.Tk()
