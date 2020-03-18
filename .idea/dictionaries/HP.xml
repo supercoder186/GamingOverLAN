@@ -2,6 +2,10 @@
   <dictionary name="HP">
     <words>
       <w>abcd</w>
+      <w>closeaccepted</w>
+      <w>closerequest</w>
+      <w>protorecieve</w>
+      <w>protosend</w>
       <w>wasd</w>
     </words>
   </dictionary>

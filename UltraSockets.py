@@ -4,6 +4,7 @@ import struct
 import threading
 
 
+# noinspection PyMethodMayBeStatic,PyUnusedLocal
 class ProtoSockets:
     def __init__(self, host, port):
         pass
@@ -20,30 +21,32 @@ class ProtoSockets:
             return data
 
 
+# noinspection PyUnresolvedReferences
 class GenericSockets:
     def __init(self):
         pass
 
     def get(self, number_of_entries):
-        if self.recieved.qsize() != 0:
+        if self.received.qsize() != 0:
             values = []
             if number_of_entries != "all":
                 for _ in range(0, number_of_entries):
-                    value = self.recieved.get()
+                    value = self.received.get()
                     values.append(value)
             else:
-                for _ in range(0, self.recieved.qsize()):
-                    value = self.recieved.get()
+                for _ in range(0, self.received.qsize()):
+                    value = self.received.get()
                     values.append(value)
             return values
         else:
             return None
 
+    # noinspection PyMethodMayBeStatic
     def parse_host(self, hostname):
         host = hostname.replace('tcp://', '').split(':')
         try:
             port = int(host[1])
-        except:
+        except IndexError:
             raise TypeError("Invalid format! Use format <ip>:<port>")
         host = host[0]
         return host, port
@@ -53,11 +56,12 @@ class Server(ProtoSockets, GenericSockets):
 
     def __init__(self, hostname, connections, name):
 
+        self.users = {}
         self.type = "server"
         self.Socket = socket.socket()
         self.name = name
         self.collector_threads = []
-        self.recieved = queue.Queue()
+        self.received = queue.Queue()
 
         host, port = self.parse_host(hostname)
 
@@ -67,7 +71,6 @@ class Server(ProtoSockets, GenericSockets):
         self.handshake_initiate(connections)
 
     def handshake_initiate(self, connections):
-        self.users = {}
 
         for i in range(0, connections):
             conn, addr = self.Socket.accept()
@@ -79,7 +82,8 @@ class Server(ProtoSockets, GenericSockets):
             t.start()
             self.collector_threads.append(t)
 
-        for key, value in self.users.items():
+        for key, _ in self.users.items():
+            # noinspection PyUnboundLocalVariable
             self.protosend(self.name, conn)
 
     def idle_collector(self, conn, name):
@@ -101,7 +105,7 @@ class Server(ProtoSockets, GenericSockets):
                         self.send(name, "closeaccepted")
                         break
                     else:
-                        self.recieved.put([name, recipient[2], self.recieved.qsize()])
+                        self.received.put([name, recipient[2], self.received.qsize()])
                 else:
                     self.send(name, recipient[2])
 
@@ -118,13 +122,13 @@ class Server(ProtoSockets, GenericSockets):
         self.users[name][0].send(message)
 
 
+# noinspection PyAttributeOutsideInit
 class Client(ProtoSockets, GenericSockets):
     def __init__(self, hostname, name):
-
         self.type = "client"
         self.conn = socket.socket()
         self.name = name
-        self.recieved = queue.Queue()
+        self.received = queue.Queue()
 
         host, port = self.parse_host(hostname)
 
@@ -161,7 +165,7 @@ class Client(ProtoSockets, GenericSockets):
             if recipient[2] == 'closeaccepted':
                 break
             else:
-                self.recieved.put([recipient[0], recipient[2], self.recieved.qsize()])
+                self.received.put([recipient[0], recipient[2], self.received.qsize()])
 
     def close(self):
         self.send(self.servername, "closerequest")
