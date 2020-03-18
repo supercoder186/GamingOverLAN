@@ -9,6 +9,7 @@ from UltraSockets import Server
 
 
 def get_ip_address():
+    # This function opens a temporary socket that is used to find the computer's ip
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     s.connect(("8.8.8.8", 80))
     return s.getsockname()[0] + ':8080'
@@ -22,13 +23,17 @@ host_ip = get_ip_address()
 
 def run_server(host, chars):
     global server
+    # This starts the server, and the server begins waiting for client connections
     server = Server(host, 1, 'server')
+    # The server sends the client the allowed characters
     server.send('client', chars)
     while True:
+        # The server retrieves any data that it has received
         data = server.get('all')
         if data:
             for objects in data:
                 obj = objects[1]
+                # The server then performs the corresponding action on the key
                 if obj[1] == 'n':
                     pyautogui.keyUp(obj[0])
                 else:
@@ -36,22 +41,26 @@ def run_server(host, chars):
 
 
 def toggle_host():
-    global tSelectHost, tSelectChar, running, thread, host_ip, btn_text, server
+    global tSelectHost, tSelectChar, running, thread, host_ip, btn_text
     running = not running
-    print('Running:', running)
     if running:
+        # Data is retrieved from both text fields
         host = tSelectHost.get('1.0', 'end-1c')
         if not host:
+            # If the host is left empty, it is replaced with auto-detected host
             host = host_ip
         chars = tSelectChar.get('1.0', 'end-1c')
+        # Starts new server thread
         thread = Thread(target=run_server, args=[host, chars])
         thread.start()
-        btn_text.set('Stop server')
+        btn_text.set('Stop Server')
     else:
         # noinspection PyProtectedMember
+        # When Stop Server is pressed, the application is terminated
         os._exit(0)
 
 
+# Defining the layout
 root = tk.Tk()
 canvas = tk.Canvas(root, width=480, height=180)
 canvas.pack()
