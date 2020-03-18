@@ -15,17 +15,26 @@ def get_ip_address():
 host_ip = get_ip_address()
 
 root = tk.Tk()
-canvas = tk.Canvas(root, width=640, height=480)
+canvas = tk.Canvas(root, width=480, height=180)
 canvas.pack()
 
 autoHostDetect = tk.Label(root, text='The auto-detected hostname is: ' + get_ip_address())
 autoHostDetect.place(height=32, relwidth=1)
 
-hostHint = tk.Label(root, text='Hostname (Leave blank for auto-detected)')
-hostHint.place(height=32, relwidth=1, y=32)
+lHostHint = tk.Label(root, text='Hostname (Leave blank for auto-detected)')
+lHostHint.place(height=32, relwidth=1, y=32)
 
-selectHost = tk.Text(root, padx=5, pady=4)
-selectHost.place(height=32, y=64, relwidth=0.9, relx=0.05)
+tSelectHost = tk.Text(root, padx=5, pady=4)
+tSelectHost.place(height=32, y=64, relwidth=0.9, relx=0.05)
+
+lCharHint = tk.Label(root, text='Characters:')
+lCharHint.place(height=32, relwidth=0.2, y=104)
+
+tSelectChar = tk.Text(root, padx=5, pady=4)
+tSelectChar.place(height=32, y=104, relwidth=0.7, relx=0.25)
+
+btServerToggle = tk.Button(root, text='Start Host', padx=10, pady=5)
+btServerToggle.place(height=32, y=144, relwidth=0.2, relx=0.4)
 
 root.mainloop()
 
