@@ -91,7 +91,7 @@ def update_rebinds():
 
 root = tk.Tk()
 root.title('GamingOverLAN Client')
-canvas = tk.Canvas(root, width=480, height=180)
+canvas = tk.Canvas(root, width=480, height=200)
 canvas.pack()
 
 lHostHint = tk.Label(root, text='Host:')
@@ -102,19 +102,19 @@ tHost.place(relwidth=0.9, height=32, relx=0.1)
 
 client_btn_txt = tk.StringVar(value='Connect')
 btStartClient = tk.Button(root, textvariable=client_btn_txt, command=toggle_client)
-btStartClient.place(height=32, y=32, relwidth=0.8, relx=0.1)
+btStartClient.place(height=32, y=40, relwidth=0.8, relx=0.1)
 
 char_txt = tk.StringVar(value='Character string: ')
 lCharString = tk.Label(root, textvariable=char_txt, padx=8)
-lCharString.place(height=32, y=64)
+lCharString.place(height=32, y=80)
 
 lRebinds = tk.Label(root, text='Rebind string: ')
-lRebinds.place(relwidth=0.2, y=96, height=32)
+lRebinds.place(relwidth=0.2, y=120, height=32)
 
 tRebinds = tk.Text(root, padx=5, pady=8)
-tRebinds.place(relwidth=0.75, relx=0.2, height=32, y=96)
+tRebinds.place(relwidth=0.75, relx=0.2, height=32, y=120)
 
 btUpdateRebinds = tk.Button(root, text='Update rebinds', command=update_rebinds)
-btUpdateRebinds.place(relwidth=0.8, height=32, y=140, relx=0.1)
+btUpdateRebinds.place(relwidth=0.8, height=32, y=160, relx=0.1)
 
 root.mainloop()
