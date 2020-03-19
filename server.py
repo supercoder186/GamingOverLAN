@@ -19,14 +19,15 @@ running = False
 thread = None
 server = None
 host_ip = get_ip_address()
+chars = None
 
 
-def run_server(host, chars):
+def run_server(host, characters):
     global server
     # This starts the server, and the server begins waiting for client connections
     server = Server(host, 1, 'server')
     # The server sends the client the allowed characters
-    server.send('client', chars)
+    server.send('client', characters)
     while True:
         # The server retrieves any data that it has received
         data = server.get('all')
@@ -34,14 +35,19 @@ def run_server(host, chars):
             for objects in data:
                 obj = objects[1]
                 # The server then performs the corresponding action on the key
-                if obj[1] == 'n':
-                    pyautogui.keyUp(obj[0])
+                if obj == 'release_all':
+                    for char in characters:
+                        pyautogui.keyUp(char)
                 else:
-                    pyautogui.keyDown(obj[0])
+                    if obj[1] == 'n':
+                        pyautogui.keyUp(obj[0])
+                    else:
+                        print('Pressing key:', obj[0])
+                        pyautogui.keyDown(obj[0])
 
 
 def toggle_host():
-    global tSelectHost, tSelectChar, running, thread, host_ip, btn_text
+    global tSelectHost, tSelectChar, running, thread, host_ip, btn_text, chars
     running = not running
     if running:
         # Data is retrieved from both text fields
@@ -62,6 +68,7 @@ def toggle_host():
 
 # Defining the layout
 root = tk.Tk()
+root.title('GamingOverLAN Server')
 canvas = tk.Canvas(root, width=480, height=180)
 canvas.pack()
 
