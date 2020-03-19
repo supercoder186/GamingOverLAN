@@ -1,6 +1,21 @@
-from pynput.keyboard import Listener
 import time
+import tkinter as tk
+
+from pynput.keyboard import Listener
+
 from UltraSockets import Client
+
+root = tk.Tk()
+canvas = tk.Canvas(root, width=480, height=180)
+canvas.pack()
+
+lHostHint = tk.Label(root, text='Host:')
+lHostHint.place(relwidth=0.1, height=32)
+
+tHost = tk.Text(root, padx=5, pady=8)
+tHost.place(relwidth=0.9, height=32, relx=0.1)
+
+root.mainloop()
 
 print("The server should have printed the hostname")
 host = input("Enter the hostname: ")
