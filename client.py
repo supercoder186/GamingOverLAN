@@ -5,8 +5,23 @@ from pynput.keyboard import Listener
 
 from UltraSockets import Client
 
+c = None
+pc = None
+
+
+def start_client(host):
+    global c, pc
+    pc = Client(host, 'client')
+    time.sleep(1)
+    c = pc.get('all')[0][1]
+
+
+def stop_client():
+    pc.close()
+
+
 root = tk.Tk()
-canvas = tk.Canvas(root, width=480, height=180)
+canvas = tk.Canvas(root, width=480, height=240)
 canvas.pack()
 
 lHostHint = tk.Label(root, text='Host:')
@@ -15,16 +30,17 @@ lHostHint.place(relwidth=0.1, height=32)
 tHost = tk.Text(root, padx=5, pady=8)
 tHost.place(relwidth=0.9, height=32, relx=0.1)
 
+client_btn_txt = tk.StringVar()
+client_btn_txt.set('Connect')
+btStartClient = tk.Button(root, textvariable=client_btn_txt)
+btStartClient.place(height=32, y=32, relwidth=0.8, relx=0.1)
+
+char_txt = tk.StringVar()
+char_txt.set('Character string: ')
+lCharString = tk.Label(root, textvariable=char_txt, padx=8)
+lCharString.place(height=32, y=64)
+
 root.mainloop()
-
-print("The server should have printed the hostname")
-host = input("Enter the hostname: ")
-name = 'client'
-
-pc = Client(host, name)
-time.sleep(1)
-
-c = pc.get('all')[0][1]
 
 print("Connection established")
 print('You can use the following characters:', c)
