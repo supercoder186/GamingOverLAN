@@ -20,12 +20,13 @@ thread = None
 server = None
 host_ip = get_ip_address()
 chars = None
+host = None
 
 
-def run_server(host, characters):
+def run_server(server_host, characters):
     global server
     # This starts the server, and the server begins waiting for client connections
-    server = Server(host, 1, 'server')
+    server = Server(server_host, 1, 'server')
     # The server sends the client the allowed characters
     server.send('client', characters)
     while True:
@@ -47,7 +48,7 @@ def run_server(host, characters):
 
 
 def toggle_host():
-    global tSelectHost, tSelectChar, running, thread, host_ip, btn_text, chars
+    global tSelectHost, tSelectChar, running, thread, host_ip, btn_text, chars, client_host_text, host
     running = not running
     if running:
         # Data is retrieved from both text fields
@@ -60,20 +61,27 @@ def toggle_host():
         thread = Thread(target=run_server, args=[host, chars])
         thread.start()
         btn_text.set('Stop Server')
+        client_host_text.set('Hostname for Client: ' + host)
     else:
         # noinspection PyProtectedMember
         # When Stop Server is pressed, the application is terminated
         os._exit(0)
 
 
+def copy_host():
+    global root
+    root.clipboard_clear()
+    root.clipboard_append(host)
+
+
 # Defining the layout
 root = tk.Tk()
 root.title('GamingOverLAN Server')
-canvas = tk.Canvas(root, width=480, height=180)
+canvas = tk.Canvas(root, width=480, height=220)
 canvas.pack()
 
-autoHostDetect = tk.Label(root, text='The auto-detected hostname is: ' + get_ip_address())
-autoHostDetect.place(height=32, relwidth=1)
+lAutoDetect = tk.Label(root, text='The auto-detected hostname is: ' + get_ip_address())
+lAutoDetect.place(height=32, relwidth=1)
 
 lHostHint = tk.Label(root, text='Hostname (Leave blank for auto-detected)')
 lHostHint.place(height=32, relwidth=1, y=32)
@@ -87,8 +95,15 @@ lCharHint.place(height=32, relwidth=0.2, y=104)
 tSelectChar = tk.Text(root, padx=5, pady=4)
 tSelectChar.place(height=32, y=104, relwidth=0.7, relx=0.25)
 
+client_host_text = tk.StringVar(value='Hostname for Client: ')
+lClientHost = tk.Label(root, textvariable=client_host_text)
+lClientHost.place(height=32, y=144, relwidth=0.7, relx=0.05)
+
+btHostCopy = tk.Button(root, text='Copy', command=copy_host)
+btHostCopy.place(height=32, y=144, relwidth=0.2, relx=0.8)
+
 btn_text = tk.StringVar(value='Start Server')
 btServerToggle = tk.Button(root, textvariable=btn_text, padx=10, pady=5, command=toggle_host)
-btServerToggle.place(height=32, y=144, relwidth=0.2, relx=0.4)
+btServerToggle.place(height=32, y=184, relwidth=0.2, relx=0.4)
 
 root.mainloop()

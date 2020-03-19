@@ -100,13 +100,11 @@ lHostHint.place(relwidth=0.1, height=32)
 tHost = tk.Text(root, padx=5, pady=8)
 tHost.place(relwidth=0.9, height=32, relx=0.1)
 
-client_btn_txt = tk.StringVar()
-client_btn_txt.set('Connect')
+client_btn_txt = tk.StringVar(value='Connect')
 btStartClient = tk.Button(root, textvariable=client_btn_txt, command=toggle_client)
 btStartClient.place(height=32, y=32, relwidth=0.8, relx=0.1)
 
-char_txt = tk.StringVar()
-char_txt.set('Character string: ')
+char_txt = tk.StringVar(value='Character string: ')
 lCharString = tk.Label(root, textvariable=char_txt, padx=8)
 lCharString.place(height=32, y=64)
 
