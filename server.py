@@ -20,7 +20,7 @@ def get_ip_address():
 
 
 ngrok.kill()  # kills any running ngrok processes
-# All the global variables are declared and assigned
+# declare and assign all global variables
 running = False
 thread = None
 server = None
@@ -33,7 +33,7 @@ regions = ['in', 'us', 'eu', 'ap', 'au', 'sa', 'jp']
 
 def run_server(server_host, characters):
     global server
-    # This starts the server, and the server begins waiting for client connections
+    # starts the server, and start waiting for client connections
     server = Server(server_host, 1, 'server')
     time.sleep(0.5)  # Wait for 0.5 seconds to ensure the handshake is completed - allows for higher ping connections
     server.send('client', characters)  # The server sends the client the allowed characters
