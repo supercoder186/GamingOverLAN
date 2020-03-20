@@ -4,6 +4,7 @@ import tkinter as tk
 from threading import Thread
 
 import pyautogui
+import yaml
 from pyngrok import ngrok
 from pyngrok.exception import PyngrokNgrokError
 
@@ -52,6 +53,18 @@ def run_server(server_host, characters):
                         pyautogui.keyDown(obj[0])
 
 
+def set_region(rgn):
+    config_path = os.path.join(os.path.expanduser("~"), '.ngrok2', 'ngrok.yml')
+
+    with open(config_path, 'r') as config:
+        data = yaml.safe_load(config)
+
+    data['region'] = rgn
+
+    with open(config_path, 'w') as config:
+        yaml.dump(data, config)
+
+
 def toggle_host():
     global tSelectHost, tSelectChar, running, thread, host_ip, btn_text, chars, client_host_text, host, useNgrok
     global region
@@ -60,9 +73,9 @@ def toggle_host():
         chars = tSelectChar.get('1.0', 'end-1c')
         if useNgrok.get():
             rgn = regions[region_names.index(region.get())]
-            print(rgn)
+            set_region(rgn)
             try:
-                host = ngrok.connect(8080, proto='tcp', options={'region': rgn})
+                host = ngrok.connect(8080, proto='tcp')
             except PyngrokNgrokError:
                 print('Ngrok failed!')
                 ngrok.kill()
