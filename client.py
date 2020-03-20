@@ -34,15 +34,21 @@ def start_client(host):
     global c, pc, char_txt, client_btn_txt, connected, chars, rebinds, pressedChars, listener
     try:
         pc = Client(host, 'client')
-    except TypeError:
+    except TypeError as e:
+        print(e)
         connected = False
         return
-    except ConnectionRefusedError:
+    except ConnectionRefusedError as e:
+        print(e)
         connected = False
         return
     client_btn_txt.set('Disconnect')
-    time.sleep(1)
-    c = pc.get('all')[0][1]
+    obj = None
+    while obj is None:
+        time.sleep(0.1)
+        obj = pc.get('all')
+
+    c = obj[0][1]
 
     char_txt.set('Character string: ' + c)
 

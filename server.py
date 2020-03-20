@@ -1,5 +1,6 @@
 import os
 import socket
+import time
 import tkinter as tk
 from threading import Thread
 
@@ -34,6 +35,7 @@ def run_server(server_host, characters):
     # This starts the server, and the server begins waiting for client connections
     server = Server(server_host, 1, 'server')
     # The server sends the client the allowed characters
+    time.sleep(0.5)
     server.send('client', characters)
     while True:
         # The server retrieves any data that it has received
