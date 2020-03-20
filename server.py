@@ -5,6 +5,7 @@ from threading import Thread
 
 import pyautogui
 from pyngrok import ngrok
+from pyngrok.exception import PyngrokNgrokError
 
 from UltraSockets import Server
 
@@ -16,14 +17,15 @@ def get_ip_address():
     return s.getsockname()[0] + ':8080'
 
 
+ngrok.kill()
 running = False
 thread = None
 server = None
 host_ip = get_ip_address()
 chars = None
 host = None
-region_names = ['United States', 'Europe', 'Asia/Pacific', 'Australia', 'South America', 'Japan', 'India']
-regions = ['us', 'eu', 'ap', 'au', 'sa', 'jp', 'in']
+region_names = ['India', 'United States', 'Europe', 'Asia/Pacific', 'Australia', 'South America', 'Japan']
+regions = ['in', 'us', 'eu', 'ap', 'au', 'sa', 'jp']
 
 
 def run_server(server_host, characters):
@@ -57,7 +59,14 @@ def toggle_host():
     if running:
         chars = tSelectChar.get('1.0', 'end-1c')
         if useNgrok.get():
-            host = ngrok.connect(8080, proto='tcp', options={'region': regions[region_names.index(region.get())]})
+            rgn = regions[region_names.index(region.get())]
+            print(rgn)
+            try:
+                host = ngrok.connect(8080, proto='tcp', options={'region': 'in'})
+            except PyngrokNgrokError:
+                print('Ngrok failed!')
+                ngrok.kill()
+                os._exit(1)
             thread = Thread(target=run_server, args=['localhost:8080', chars])
         else:
             # Data is retrieved from both text fields
@@ -71,8 +80,8 @@ def toggle_host():
         btn_text.set('Stop Server')
         client_host_text.set('Hostname for Client: ' + host)
     else:
-        # noinspection PyProtectedMember
         # When Stop Server is pressed, the application is terminated
+        ngrok.kill()
         os._exit(0)
 
 
