@@ -3,13 +3,14 @@ import tkinter as tk
 from pyngrok import ngrok
 
 
-def set_token():
+def set_token():  # set the token
     global tAuthToken, success_txt
-    auth_token = tAuthToken.get('1.0', 'end-1c')
-    ngrok.set_auth_token(auth_token)
-    success_txt.set('Token set to ' + auth_token)
+    auth_token = tAuthToken.get('1.0', 'end-1c')  # retrieve the ngrok auth token from the text field
+    ngrok.set_auth_token(auth_token)  # sets the ngrok auth token
+    success_txt.set('Token set to ' + auth_token)  # notify the user it has been changed with the text field
 
 
+# define the layout
 root = tk.Tk()
 root.title('Ngrok Setup')
 canvas = tk.Canvas(root, width=480, height=120)
@@ -28,4 +29,5 @@ success_txt = tk.StringVar()
 lSuccess = tk.Label(root, textvariable=success_txt)
 lSuccess.place(relwidth=1, height=32, y=80)
 
+# start the UI loop
 root.mainloop()
