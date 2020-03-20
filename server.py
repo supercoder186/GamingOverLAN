@@ -19,11 +19,12 @@ def get_ip_address():
     return s.getsockname()[0] + ':8080'
 
 
-ngrok.kill()
+ngrok.kill()  # kills any running ngrok processes
+# All the global variables are declared and assigned
 running = False
 thread = None
 server = None
-host_ip = get_ip_address()
+host_ip = get_ip_address()  # assigns host ip to the PC's IP address on the network
 chars = None
 host = None
 region_names = ['India', 'United States', 'Europe', 'Asia/Pacific', 'Australia', 'South America', 'Japan']
@@ -34,9 +35,8 @@ def run_server(server_host, characters):
     global server
     # This starts the server, and the server begins waiting for client connections
     server = Server(server_host, 1, 'server')
-    # The server sends the client the allowed characters
-    time.sleep(0.5)
-    server.send('client', characters)
+    time.sleep(0.5)  # Wait for 0.5 seconds to ensure the handshake is completed - allows for higher ping connections
+    server.send('client', characters)  # The server sends the client the allowed characters
     while True:
         # The server retrieves any data that it has received
         data = server.get('all')
@@ -45,9 +45,11 @@ def run_server(server_host, characters):
                 obj = objects[1]
                 # The server then performs the corresponding action on the key
                 if obj == 'release_all':
+                    # If the message is to release all keys, this is done
                     for char in characters:
                         pyautogui.keyUp(char)
                 else:
+                    # The server checks if the message is to release the key or press it
                     if obj[1] == 'n':
                         pyautogui.keyUp(obj[0])
                     else:
@@ -56,13 +58,17 @@ def run_server(server_host, characters):
 
 
 def set_region(rgn):
+    # The path of the ngrok config file is retrieved
     config_path = os.path.join(os.path.expanduser("~"), '.ngrok2', 'ngrok.yml')
 
+    # load the yaml config file into a dictionary
     with open(config_path, 'r') as config:
         data = yaml.safe_load(config)
 
+    # change the region
     data['region'] = rgn
 
+    # write the new dictionary into the config yaml file
     with open(config_path, 'w') as config:
         yaml.dump(data, config)
 
@@ -70,43 +76,47 @@ def set_region(rgn):
 def toggle_host():
     global tSelectHost, tSelectChar, running, thread, host_ip, btn_text, chars, client_host_text, host, useNgrok
     global region
+
+    # running is toggled
     running = not running
     if running:
-        chars = tSelectChar.get('1.0', 'end-1c')
-        if useNgrok.get():
-            rgn = regions[region_names.index(region.get())]
-            set_region(rgn)
+        chars = tSelectChar.get('1.0', 'end-1c')  # Load the allowed characters from the text field
+        if useNgrok.get():  # checks if the user enabled use ngrok
+            rgn = regions[region_names.index(region.get())]  # gets the region name
+            set_region(rgn)  # sets the region
             try:
-                host = ngrok.connect(8080, proto='tcp')
-            except PyngrokNgrokError:
+                host = ngrok.connect(8080, proto='tcp')  # start the ngrok tunnel
+            except PyngrokNgrokError:  # check if ngrok failed to start
                 print('Ngrok failed!')
+                # kill the ngrok process and exit the program with an error code
                 ngrok.kill()
                 os._exit(1)
+            # create the run server thread
             thread = Thread(target=run_server, args=['localhost:8080', chars])
         else:
-            # Data is retrieved from both text fields
+            # data is retrieved from both text fields
             host = tSelectHost.get('1.0', 'end-1c')
             if not host:
                 # If the host is left empty, it is replaced with auto-detected host
                 host = host_ip
-            # Starts new server thread
+            # create the run server thread
             thread = Thread(target=run_server, args=[host, chars])
-        thread.start()
-        btn_text.set('Stop Server')
-        client_host_text.set('Hostname for Client: ' + host)
+        thread.start()  # start the server thread
+        btn_text.set('Stop Server')  # change the button text
+        client_host_text.set('Hostname for Client: ' + host)  # display the client host so it is copiable
     else:
-        # When Stop Server is pressed, the application is terminated
+        # when Stop Server is pressed, the application is terminated
         ngrok.kill()
         os._exit(0)
 
 
-def copy_host():
+def copy_host():  # copy the host when the button is pressed
     global root
     root.clipboard_clear()
     root.clipboard_append(host)
 
 
-# Defining the layout
+# define the layout
 root = tk.Tk()
 root.title('GamingOverLAN Server')
 canvas = tk.Canvas(root, width=480, height=320)
@@ -152,6 +162,9 @@ btn_text = tk.StringVar(value='Start Server')
 btServerToggle = tk.Button(root, textvariable=btn_text, padx=10, pady=5, command=toggle_host)
 btServerToggle.place(height=32, y=280, relwidth=0.2, relx=0.4)
 
+# start the UI thread
 root.mainloop()
-ngrok.kill()
-os._exit(0)
+
+# when the UI is closed, terminate the application
+ngrok.kill()  # kill ngrok
+os._exit(0)  # kill the program
