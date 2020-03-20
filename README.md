@@ -64,3 +64,31 @@ Using own hostname: hostname, characters
 Once the server has been started, click the Copy button in order to copy the hostname to give to the Client PC. This can
 then be sent to the Client PC in order to connect to the server
 
+### Additional notes
+Once a client has connected and disconnected, the server must be stopped and restarted before it can connect to a client
+again
+
+## Using the client
+
+### Selecting the host
+In the host text field, enter the hostname that the Server PC copied and sent. This will tell the Client which PC to 
+connect to.
+
+### Connecting to the host
+To connect to the server, press the Connect button (as if that wasn't obvious). The server must be online or the
+application will freeze
+
+### Rebinds
+Once the Client has connected to the Server, a character string will appear in its text box. These are the characters
+that the client is allowed to broadcast to the server. There is a rebind feature which will allow the user to rebind
+these keys to different keys on the physical keyboard. Enter the rebind string and click Update rebinds in order to
+register the new rebind string
+
+### Rebinds - How it works
+For example, if the character string is wasd and the rebind string is entered as esdf, then when e is pressed on the
+client's keyboard, it will register as w. When s is pressed, it will register a. In other words, each key is rebound to
+its respective key in the rebind string. 
+
+#### Rebind string characteristics
+The rebind string has to be the same length as the character string in order to bind each key to its respective rebind. 
+If they are not the same length, then rebinds are disabled until a new, valid rebind string is entered
