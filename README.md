@@ -9,18 +9,18 @@ pip install -r requirements.txt
 ```
 That's it! All the requirements are automatically installed by pip
 
-##Setting up ngrok
+## Setting up ngrok
 Set up ngrok if you want to play over the internet when the Server and Client are connected to different networks. This
 is mandatory if you want to use ngrok
 
-###Creating an account
+### Creating an account
 Go to the [ngrok website](https://github.com/user/repo/blob/branch/other_file.md) and sign up for an account
 
-###Getting your auth token
+### Getting your auth token
 After creating an ngrok account, go to the [auth dashboard](https://dashboard.ngrok.com/auth) and copy your Tunnel
 Authtoken. 
 
-###Setting your auth token
+### Setting your auth token
 Open ngroksetup.py and paste this in the provided text field. Click the Set Auth Token button in order to
 finalise the auth token and store it. If this is successful, a text field will appear showing you the auth token you
 entered in order to confirm that the auth token has been set successfully
@@ -48,19 +48,19 @@ it sends the key presses via an external server (it's secure, don't worry)
 When choosing the ngrok region, ensure that you choose the region (geographically)closest to you in order to minimize
 ping and therefore input lag
 
-###Setting the usable characters
+### Setting the usable characters
 Enter the characters into the characters text field without any separation. Arrow keys and Space are not supported.
 e.g. - 'wasd' or 'esdf' (without the quotes)
 
-###Starting the server
+### Starting the server
 In order to start the server, simply click start server after entering all the required fields
 
-####Required fields
+#### Required fields
 Using auto-detected hostname: characters  
 Using ngrok: ngrok checkbox, ngrok region, characters  
 Using own hostname: hostname, characters
 
-###Copying the hostname
+### Copying the hostname
 Once the server has been started, click the Copy button in order to copy the hostname to give to the Client PC. This can
 then be sent to the Client PC in order to connect to the server
 
