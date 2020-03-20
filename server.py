@@ -62,7 +62,7 @@ def toggle_host():
             rgn = regions[region_names.index(region.get())]
             print(rgn)
             try:
-                host = ngrok.connect(8080, proto='tcp', options={'region': 'in'})
+                host = ngrok.connect(8080, proto='tcp', options={'region': rgn})
             except PyngrokNgrokError:
                 print('Ngrok failed!')
                 ngrok.kill()
