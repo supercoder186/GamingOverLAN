@@ -5,7 +5,6 @@ import tkinter as tk
 from threading import Thread
 
 import pyautogui
-import yaml
 from pyngrok import ngrok
 from pyngrok.exception import PyngrokNgrokError
 
@@ -29,6 +28,7 @@ chars = None
 host = None
 region_names = ['India', 'United States', 'Europe', 'Asia/Pacific', 'Australia', 'South America', 'Japan']
 regions = ['in', 'us', 'eu', 'ap', 'au', 'sa', 'jp']
+region = regions[0]
 
 
 def run_server(server_host, characters):
@@ -58,19 +58,8 @@ def run_server(server_host, characters):
 
 
 def set_region(rgn):
-    # The path of the ngrok config file is retrieved
-    config_path = os.path.join(os.path.expanduser("~"), '.ngrok2', 'ngrok.yml')
-
-    # load the yaml config file into a dictionary
-    with open(config_path, 'r') as config:
-        data = yaml.safe_load(config)
-
-    # change the region
-    data['region'] = rgn
-
-    # write the new dictionary into the config yaml file
-    with open(config_path, 'w') as config:
-        yaml.dump(data, config)
+    global region
+    region = rgn
 
 
 def toggle_host():
@@ -85,7 +74,7 @@ def toggle_host():
             rgn = regions[region_names.index(region.get())]  # gets the region name
             set_region(rgn)  # sets the region
             try:
-                host = ngrok.connect(8080, proto='tcp')  # start the ngrok tunnel
+                host = ngrok.connect(8080, proto='tcp', region=region)  # start the ngrok tunnel
             except PyngrokNgrokError:  # check if ngrok failed to start
                 print('Ngrok failed!')
                 # kill the ngrok process and exit the program with an error code
