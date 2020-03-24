@@ -28,7 +28,6 @@ chars = None
 host = None
 region_names = ['India', 'United States', 'Europe', 'Asia/Pacific', 'Australia', 'South America', 'Japan']
 regions = ['in', 'us', 'eu', 'ap', 'au', 'sa', 'jp']
-region = regions[0]
 
 
 def run_server(server_host, characters):
@@ -57,11 +56,6 @@ def run_server(server_host, characters):
                         pyautogui.keyDown(obj[0])
 
 
-def set_region(rgn):
-    global region
-    region = rgn
-
-
 def toggle_host():
     global tSelectHost, tSelectChar, running, thread, host_ip, btn_text, chars, client_host_text, host, useNgrok
     global region
@@ -72,9 +66,8 @@ def toggle_host():
         chars = tSelectChar.get('1.0', 'end-1c')  # Load the allowed characters from the text field
         if useNgrok.get():  # checks if the user enabled use ngrok
             rgn = regions[region_names.index(region.get())]  # gets the region name
-            set_region(rgn)  # sets the region
             try:
-                host = ngrok.connect(8080, proto='tcp', region=region)  # start the ngrok tunnel
+                host = ngrok.connect(8080, proto='tcp', region=rgn)  # start the ngrok tunnel
             except PyngrokNgrokError:  # check if ngrok failed to start
                 print('Ngrok failed!')
                 # kill the ngrok process and exit the program with an error code
