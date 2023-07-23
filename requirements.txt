@@ -1,4 +1,4 @@
-future==0.18.2
+future==0.18.3
 MouseInfo==0.1.2
 Pillow==9.3.0
 PyAutoGUI==0.9.48
